@@ -5,33 +5,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-
 @Entity
-public class Category implements Serializable{
-	
+public class Product implements Serializable{
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
-	private String nome;
+	private String name;
 	
-	@ManyToMany(mappedBy="categories")
-	private List<Product> products = new ArrayList<>();
+	private Double price;
 	
-	public Category() {
+	@ManyToMany
+	@JoinTable(name = "PRODUTO_CATEGORIA", 
+		joinColumns = @JoinColumn(name = "product_id"),
+		inverseJoinColumns = @JoinColumn(name = "category_id"))
+	private List<Category> categories = new ArrayList<>();
+	
+	public Product() {
 	}
 
-	public Category(Integer id, String nome) {
+	public Product(Integer id, String name, Double price) {
 		super();
 		this.id = id;
-		this.nome = nome;
+		this.name = name;
+		this.price = price;
 	}
 
 	public Integer getId() {
@@ -42,20 +49,28 @@ public class Category implements Serializable{
 		this.id = id;
 	}
 
-	public String getNome() {
-		return nome;
+	public String getName() {
+		return name;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setName(String name) {
+		this.name = name;
 	}
-	
-	public List<Product> getProducts() {
-		return products;
+
+	public Double getPrice() {
+		return price;
 	}
-	
-	public void setProducts(List<Product> products) {
-		this.products = products;
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public List<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
 	}
 
 	@Override
@@ -63,7 +78,6 @@ public class Category implements Serializable{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
 		return result;
 	}
 
@@ -75,18 +89,14 @@ public class Category implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Category other = (Category) obj;
+		Product other = (Product) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (nome == null) {
-			if (other.nome != null)
-				return false;
-		} else if (!nome.equals(other.nome))
-			return false;
 		return true;
 	}
-
+	
+	
 }
