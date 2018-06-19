@@ -7,10 +7,19 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.seibert.cursomc.domain.Address;
 import com.seibert.cursomc.domain.Category;
+import com.seibert.cursomc.domain.City;
+import com.seibert.cursomc.domain.Client;
 import com.seibert.cursomc.domain.Product;
+import com.seibert.cursomc.domain.State;
+import com.seibert.cursomc.domain.enums.ClientType;
+import com.seibert.cursomc.repositories.AddressRepository;
 import com.seibert.cursomc.repositories.CategoryRepository;
+import com.seibert.cursomc.repositories.CityRepository;
+import com.seibert.cursomc.repositories.ClientRepository;
 import com.seibert.cursomc.repositories.ProductRepository;
+import com.seibert.cursomc.repositories.StateRepository;
 
 @SpringBootApplication
 public class CursomcApplication implements CommandLineRunner{
@@ -18,8 +27,21 @@ public class CursomcApplication implements CommandLineRunner{
 	@Autowired
 	private CategoryRepository categoryRepository;
 	
-	@Autowired 
+	@Autowired
 	private ProductRepository productRepository;
+	
+	@Autowired
+	private CityRepository cityRepository;
+
+	@Autowired
+	private StateRepository stateRepository;
+	
+	@Autowired
+	private ClientRepository clientRepository;
+	
+	@Autowired
+	private AddressRepository addressRepository;
+	
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -42,8 +64,36 @@ public class CursomcApplication implements CommandLineRunner{
 		p2.getCategories().addAll(Arrays.asList(ca1, ca2));
 		p3.getCategories().addAll(Arrays.asList(ca1));
 		
-		
 		categoryRepository.saveAll(Arrays.asList(ca1, ca2));
 		productRepository.saveAll(Arrays.asList(p1,p2,p3));
+		
+		State stt1 = new State(null, "Minas Gerais");
+		State stt2 = new State(null, "São Paulo");
+		State stt3 = new State(null, "Paraná");
+		
+		City city1 = new City(null, "Uberlândia", stt1);
+		City city2 = new City(null, "São Paulo", stt2);
+		City city3 = new City(null, "Campinas", stt2);
+		City city4 = new City(null, "Maringá", stt3);
+		City city5 = new City(null, "Indaiatuba", stt2);
+		
+		stt1.getCities().addAll(Arrays.asList(city1));
+		stt2.getCities().addAll(Arrays.asList(city2,city3,city5));
+		stt3.getCities().addAll(Arrays.asList(city4));
+		
+		stateRepository.saveAll(Arrays.asList(stt1,stt2,stt3));
+		cityRepository.saveAll(Arrays.asList(city1,city2,city3,city4,city5));
+		
+		Client cli1 = new Client(null,"Maria Silva", "maria@gmail", "36378912", ClientType.PESSOA_FISICA);
+		
+		cli1.getPhones().addAll(Arrays.asList("3211354698","321654987"));
+		
+		Address address1 = new Address(null,"Rua Flores","300","apto 303","Jardim Alice","13224566", cli1,city1);
+		Address address2 = new Address(null,"Avenida Matos","105","sala 800","Centro","12455656", cli1,city2);
+		
+		cli1.getAddresses().addAll(Arrays.asList(address1, address2));
+		
+		clientRepository.saveAll(Arrays.asList(cli1));
+		addressRepository.saveAll(Arrays.asList(address1,address2));
 	}
 }
