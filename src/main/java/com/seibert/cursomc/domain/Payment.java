@@ -1,37 +1,42 @@
 package com.seibert.cursomc.domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.seibert.cursomc.domain.enums.PaymentStatus;
 
 @Entity
-public class State implements Serializable {
+@Inheritance(strategy=InheritanceType.JOINED)
+public abstract class Payment implements Serializable{
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
-	private String nome;
+	private Integer status;
 	
-	@JsonBackReference
-	@OneToMany(mappedBy="state")
-	private List<City> cities = new ArrayList<>();
+	@OneToOne
+	@JoinColumn(name="order_id")
+	@MapsId
+	private Order order;
 	
-	public State() {
+	public Payment() {
 	}
 
-	public State(Integer id, String nome) {
+	public Payment(Integer id, PaymentStatus status, Order order) {
 		super();
 		this.id = id;
-		this.nome = nome;
+		this.status = status.getCod();
+		this.order = order;
 	}
 
 	public Integer getId() {
@@ -42,20 +47,20 @@ public class State implements Serializable {
 		this.id = id;
 	}
 
-	public String getNome() {
-		return nome;
+	public PaymentStatus getStatus() {
+		return PaymentStatus.toEnum(status);
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setStatus(PaymentStatus status) {
+		this.status = status.getCod();
 	}
 
-	public List<City> getCities() {
-		return cities;
+	public Order getOrder() {
+		return order;
 	}
 
-	public void setCities(List<City> cities) {
-		this.cities = cities;
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 
 	@Override
@@ -74,7 +79,7 @@ public class State implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		State other = (State) obj;
+		Payment other = (Payment) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -82,4 +87,5 @@ public class State implements Serializable {
 			return false;
 		return true;
 	}
+	
 }
