@@ -13,6 +13,7 @@ import com.seibert.cursomc.domain.Category;
 import com.seibert.cursomc.domain.City;
 import com.seibert.cursomc.domain.Client;
 import com.seibert.cursomc.domain.Order;
+import com.seibert.cursomc.domain.OrderItem;
 import com.seibert.cursomc.domain.Payment;
 import com.seibert.cursomc.domain.PaymentWithCard;
 import com.seibert.cursomc.domain.PaymentWithTicket;
@@ -24,6 +25,7 @@ import com.seibert.cursomc.repositories.AddressRepository;
 import com.seibert.cursomc.repositories.CategoryRepository;
 import com.seibert.cursomc.repositories.CityRepository;
 import com.seibert.cursomc.repositories.ClientRepository;
+import com.seibert.cursomc.repositories.OrderItemRepository;
 import com.seibert.cursomc.repositories.OrderRepository;
 import com.seibert.cursomc.repositories.PaymentRepository;
 import com.seibert.cursomc.repositories.ProductRepository;
@@ -55,6 +57,9 @@ public class CursomcApplication implements CommandLineRunner{
 	
 	@Autowired
 	private OrderRepository orderRepository;
+	
+	@Autowired
+	private OrderItemRepository orderItemRepository;
 	
 	
 	public static void main(String[] args) {
@@ -126,6 +131,19 @@ public class CursomcApplication implements CommandLineRunner{
 		
 		orderRepository.saveAll(Arrays.asList(order1,order2));
 		paymentRepository.saveAll(Arrays.asList(pay1,pay2));
+		
+		OrderItem orderItem1 = new OrderItem(order1, p1, 0.00, 1, 2000.00);
+		OrderItem orderItem2 = new OrderItem(order1, p3, 0.00, 2, 80.00);
+		OrderItem orderItem3 = new OrderItem(order2, p2, 100.00, 1, 800.00);
+		
+		order1.getItems().addAll(Arrays.asList(orderItem1, orderItem2));
+		order2.getItems().addAll(Arrays.asList(orderItem3));
+		
+		p1.getItems().addAll(Arrays.asList());
+		p2.getItems().addAll(Arrays.asList());
+		p3.getItems().addAll(Arrays.asList());
+		
+		orderItemRepository.saveAll(Arrays.asList(orderItem1,orderItem2,orderItem3));
 		
 	}
 }

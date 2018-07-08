@@ -2,16 +2,18 @@ package com.seibert.cursomc.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -34,6 +36,9 @@ public class Product implements Serializable{
 		inverseJoinColumns = @JoinColumn(name = "category_id"))
 	private List<Category> categories = new ArrayList<>();
 	
+	@OneToMany(mappedBy="id.product")
+	private Set<OrderItem> items = new HashSet<>();
+	
 	public Product() {
 	}
 
@@ -42,6 +47,14 @@ public class Product implements Serializable{
 		this.id = id;
 		this.name = name;
 		this.price = price;
+	}
+	
+	public List<Order> orders(){
+		List<Order> list = new ArrayList<>();
+		for (OrderItem item : items) {
+			list.add(item.getOrder());
+		}
+		return list;
 	}
 
 	public Integer getId() {
@@ -76,6 +89,14 @@ public class Product implements Serializable{
 		this.categories = categories;
 	}
 
+	public Set<OrderItem> getItems() {
+		return items;
+	}
+
+	public void setItems(Set<OrderItem> items) {
+		this.items = items;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -100,6 +121,5 @@ public class Product implements Serializable{
 			return false;
 		return true;
 	}
-	
 	
 }
