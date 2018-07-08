@@ -15,7 +15,7 @@ public class OrderItem implements Serializable{
 	@EmbeddedId
 	private OrderItemPK id = new OrderItemPK();
 	
-	private Double desconto;
+	private Double discount;
 	private Integer quantity;
 	private Double price;
 	
@@ -26,7 +26,7 @@ public class OrderItem implements Serializable{
 		super();
 		id.setOrder(order);
 		id.setProduct(product);
-		this.desconto = desconto;
+		this.discount = desconto;
 		this.quantity = quantity;
 		this.price = price;
 	}
@@ -49,11 +49,11 @@ public class OrderItem implements Serializable{
 	}
 
 	public Double getDesconto() {
-		return desconto;
+		return discount;
 	}
 
 	public void setDesconto(Double desconto) {
-		this.desconto = desconto;
+		this.discount = desconto;
 	}
 
 	public Integer getQuantity() {
