@@ -1,5 +1,6 @@
 package com.seibert.cursomc.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.hibernate.exception.ConstraintViolationException;
@@ -42,5 +43,9 @@ public class CategoryService {
 		} catch (DataIntegrityViolationException e) {
 			throw new com.seibert.cursomc.services.exception.DataIntegrityViolationException("Cannot exclude category because it has associated products!");
 		}
+	}
+
+	public List<Category> findAll() {
+		return repo.findAll();
 	}
 }
