@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.seibert.cursomc.domain.Category;
+import com.seibert.cursomc.dto.CategoryDTO;
 import com.seibert.cursomc.repositories.CategoryRepository;
 import com.seibert.cursomc.services.exception.ObjectNotFoundException;
 
@@ -55,5 +56,9 @@ public class CategoryService {
 	public Page<Category> findPage(Integer page, Integer linesPerPage, String orderBy, String direction){
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy );
 		return repo.findAll(pageRequest);
+	}
+	
+	public Category fromDTO(CategoryDTO categoryDTO) {
+		return new Category(categoryDTO.getId(), categoryDTO.getName());
 	}
 }
