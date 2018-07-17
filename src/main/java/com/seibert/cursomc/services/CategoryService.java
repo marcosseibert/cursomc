@@ -3,7 +3,6 @@ package com.seibert.cursomc.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -36,8 +35,9 @@ public class CategoryService {
 	}
 
 	public Category update(Category obj) {
-		find(obj.getId());
-		return repo.save(obj);
+		Category newObj = find(obj.getId());
+		updateData(newObj, obj);
+		return repo.save(newObj);
 	}
 
 	public void delete(Integer id) {
@@ -60,5 +60,9 @@ public class CategoryService {
 	
 	public Category fromDTO(CategoryDTO categoryDTO) {
 		return new Category(categoryDTO.getId(), categoryDTO.getName());
+	}
+	
+	private void updateData(Category newObj, Category obj) {
+		newObj.setName(obj.getName());
 	}
 }
