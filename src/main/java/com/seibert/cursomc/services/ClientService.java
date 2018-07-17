@@ -10,8 +10,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.seibert.cursomc.domain.Address;
+import com.seibert.cursomc.domain.City;
 import com.seibert.cursomc.domain.Client;
+import com.seibert.cursomc.domain.ClientNewDTO;
+import com.seibert.cursomc.domain.enums.ClientType;
 import com.seibert.cursomc.dto.ClientDTO;
+import com.seibert.cursomc.repositories.AddressRepository;
 import com.seibert.cursomc.repositories.ClientRepository;
 import com.seibert.cursomc.services.exception.ObjectNotFoundException;
 
@@ -20,12 +25,22 @@ public class ClientService {
 	
 	@Autowired
 	private ClientRepository repo;
+	
+	@Autowired
+	private AddressRepository addressRepo;
 
 	public Client find(Integer id) {
 		Optional<Client> client = repo.findById(id);
 		
 		return client.orElseThrow(() -> new ObjectNotFoundException(
 				"Object not found! Id:" + id + " Type:" + Client.class.getName()));
+	}
+	
+	public Client insert(Client obj) {
+		obj.setId(null);
+		obj = repo.save(obj);
+		addressRepo.saveAll(obj.getAddresses());
+		return obj;
 	}
 	
 	public Client update(Client obj) {
@@ -55,6 +70,24 @@ public class ClientService {
 	public Client fromDTO(ClientDTO objDTO) {
 		return new Client(objDTO.getId(), objDTO.getName(),objDTO.getEmail(),null,null);
 	}
+	
+	public Client fromDTO(ClientNewDTO objDTO) {
+		Client cli = new Client(null, objDTO.getName(), objDTO.getEmail(), objDTO.getCpfOrCnpj(), ClientType.toEnum(objDTO.getType()));
+		City city = new City(objDTO.getCityId(), null, null);
+		Address address = new Address(null, objDTO.getPublicPlace(),objDTO.getNumber(), objDTO.getComplement(), objDTO.getNeighborhood(),objDTO.getZipCode(), cli, city);
+		cli.getAddresses().add(address);
+		if(objDTO.getPhone1() != null) {
+			cli.getPhones().add(objDTO.getPhone1());
+		}
+		if(objDTO.getPhone2() != null) {
+			cli.getPhones().add(objDTO.getPhone2());
+		}
+		if(objDTO.getPhone3() != null) {
+			cli.getPhones().add(objDTO.getPhone3());
+		}
+		return cli;
+	}
+	
 	
 	private void updateData(Client newObj, Client obj) {
 		newObj.setName(obj.getName());
