@@ -2,22 +2,47 @@ package com.seibert.cursomc.domain;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
+
+import com.seibert.cursomc.services.validation.ClientInsert;
+
+@ClientInsert
 public class ClientNewDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
+	@NotEmpty(message="Preenchimento obrigatório")
+	@Length(min=5, max=120, message="o tamanho deve ser entre 5 e 120 caracteres")
 	private String name;
+	
+	@NotEmpty(message="Preenchimento obrigatório")
+	@Length(message="Email obrigatório")
 	private String email;
+	
+	@NotEmpty(message="Preenchimento obrigatório")
 	private String cpfOrCnpj;
+	
 	private Integer type;
 	
+	@NotEmpty(message="Preenchimento obrigatório")
 	private String publicPlace;
+	
+	@NotEmpty(message="Preenchimento obrigatório")
 	private String number;
+	
 	private String complement;
+	
 	private String neighborhood;
+	
+	@NotEmpty(message="Preenchimento obrigatório")
 	private String zipCode;
 	
+	@NotEmpty(message="Preenchimento obrigatório")
 	private String phone1;
+	
 	private String phone2;
+	
 	private String phone3;
 	
 	private Integer cityId;
