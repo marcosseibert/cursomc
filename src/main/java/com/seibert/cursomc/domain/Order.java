@@ -17,7 +17,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name="TB_ORDER")
@@ -30,7 +29,7 @@ public class Order implements Serializable{
 	private Integer id;
 	
 	@JsonFormat(pattern="dd/MM/yyyy hh:mm")
-	private Date order_date;
+	private Date orderDate;
 	
 	@OneToOne(cascade=CascadeType.ALL,mappedBy="order")
 	private Payment payment;
@@ -49,12 +48,20 @@ public class Order implements Serializable{
 	public Order() {
 	}
 
-	public Order(Integer id, Date date, Client client, Address deliveryAddress) {
+	public Order(Integer id, Date orderDate, Client client, Address deliveryAddress) {
 		super();
 		this.id = id;
-		this.order_date = date;
+		this.orderDate = orderDate;
 		this.client = client;
 		this.deliveryAddress = deliveryAddress;
+	}
+	
+	public double getTotalValue() {
+		double sum = 0.0;
+		for(OrderItem item : items) {
+			sum = sum + item.getSubTotalOrder();
+		}
+		return sum;
 	}
 
 	public Integer getId() {
@@ -65,12 +72,12 @@ public class Order implements Serializable{
 		this.id = id;
 	}
 
-	public Date getDate() {
-		return order_date;
+	public Date getOrderDate() {
+		return orderDate;
 	}
 
-	public void setDate(Date date) {
-		this.order_date = date;
+	public void setOrderDate(Date orderDate) {
+		this.orderDate = orderDate;
 	}
 
 	public Payment getPayment() {

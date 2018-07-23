@@ -31,13 +31,26 @@ public class OrderItem implements Serializable{
 		this.price = price;
 	}
 	
+	public double getSubTotalOrder() {
+		double total = (price - discount) * quantity;
+		return total;
+	}
+	
 	@JsonIgnore
 	public Order getOrder() {
 		return id.getOrder();
 	}
 	
+	public void setOrder(Order order) {
+		id.setOrder(order);
+	}
+	
 	public Product getProduct() {
 		return id.getProduct();
+	}
+	
+	public void setProduct(Product product) {
+		id.setProduct(product);
 	}
 
 	public OrderItemPK getId() {
@@ -48,12 +61,12 @@ public class OrderItem implements Serializable{
 		this.id = id;
 	}
 
-	public Double getDesconto() {
+	public Double getDiscount() {
 		return discount;
 	}
 
-	public void setDesconto(Double desconto) {
-		this.discount = desconto;
+	public void setDiscount(Double discount) {
+		this.discount = discount;
 	}
 
 	public Integer getQuantity() {
