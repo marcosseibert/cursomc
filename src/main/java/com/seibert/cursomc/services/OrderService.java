@@ -12,11 +12,14 @@ import com.seibert.cursomc.domain.Order;
 import com.seibert.cursomc.domain.OrderItem;
 import com.seibert.cursomc.domain.PaymentWithTicket;
 import com.seibert.cursomc.domain.enums.PaymentStatus;
+import com.seibert.cursomc.repositories.ClientRepository;
 import com.seibert.cursomc.repositories.OrderItemRepository;
 import com.seibert.cursomc.repositories.OrderRepository;
 import com.seibert.cursomc.repositories.PaymentRepository;
 import com.seibert.cursomc.repositories.ProductRepository;
 import com.seibert.cursomc.services.exception.ObjectNotFoundException;
+
+import ch.qos.logback.core.net.SyslogOutputStream;
 
 @Service	
 public class OrderService {
@@ -35,6 +38,9 @@ public class OrderService {
 	
 	@Autowired
 	private OrderItemRepository orderItemRepository;
+	
+	@Autowired
+	private ClientService clientService;
 
 	public Order find(Integer id) {
 		Optional<Order> category = repo.findById(id);
@@ -47,6 +53,7 @@ public class OrderService {
 		
 		obj.setId(null);
 		obj.setOrderDate(new Date());
+		obj.setClient(clientService.find((obj.getClient().getId())));
 		obj.getPayment().setStatus(PaymentStatus.PENDING);
 		obj.getPayment().setOrder(obj);
 		
@@ -60,12 +67,13 @@ public class OrderService {
 		
 		for (OrderItem item : obj.getItems()) {
 			item.setDiscount(0.0);
+			item.setProduct(productService.find(item.getProduct().getId()));
 			item.setPrice(productService.find(item.getProduct().getId()).getPrice());
 			item.setOrder(obj);
 		}
 		
 		orderItemRepository.saveAll(obj.getItems());
-		
+		System.out.println(obj);
 		return obj;
 	}
 }
