@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
+import com.seibert.cursomc.domain.enums.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -129,17 +130,22 @@ public class DBservices {
 		stateRepository.saveAll(Arrays.asList(stt1,stt2,stt3));
 		cityRepository.saveAll(Arrays.asList(city1,city2,city3,city4,city5));
 		
-		Client cli1 = new Client(null,"Maria Silva", "maria@gmail", "36378912", ClientType.PESSOA_FISICA, passwordEncoder.encode("123"));
-		
+		Client cli1 = new Client(null,"Maria Silva", "maria@gmail", "76659921028", ClientType.PESSOA_FISICA, passwordEncoder.encode("123"));
 		cli1.getPhones().addAll(Arrays.asList("3211354698","321654987"));
-		
+
+		Client cli2 = new Client(null,"Ana Costa", "ana_costa@gmail", "25998424093", ClientType.PESSOA_FISICA, passwordEncoder.encode("123"));
+		cli2.getPhones().addAll(Arrays.asList("3211354698","321654987"));
+		cli2.addProfile(Profile.ADMIN);
+
 		Address address1 = new Address(null,"Rua Flores","300","apto 303","Jardim Alice","13224566", cli1,city1);
 		Address address2 = new Address(null,"Avenida Matos","105","sala 800","Centro","12455656", cli1,city2);
+		Address address3 = new Address(null,"Avenida Floriano","1233","casa 3","morada do sol","32323232", cli2,city2);
 		
 		cli1.getAddresses().addAll(Arrays.asList(address1, address2));
+		cli1.getAddresses().addAll(Arrays.asList(address3));
 
-		clientRepository.saveAll(Arrays.asList(cli1));
-		addressRepository.saveAll(Arrays.asList(address1,address2));
+		clientRepository.saveAll(Arrays.asList(cli1,cli2));
+		addressRepository.saveAll(Arrays.asList(address1,address2,address3));
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		
