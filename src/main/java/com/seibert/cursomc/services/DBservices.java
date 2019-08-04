@@ -142,7 +142,7 @@ public class DBservices {
 		Address address3 = new Address(null,"Avenida Floriano","1233","casa 3","morada do sol","32323232", cli2,city2);
 		
 		cli1.getAddresses().addAll(Arrays.asList(address1, address2));
-		cli1.getAddresses().addAll(Arrays.asList(address3));
+		cli2.getAddresses().addAll(Arrays.asList(address3));
 
 		clientRepository.saveAll(Arrays.asList(cli1,cli2));
 		addressRepository.saveAll(Arrays.asList(address1,address2,address3));
