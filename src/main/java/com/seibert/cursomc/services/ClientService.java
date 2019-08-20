@@ -3,6 +3,9 @@ package com.seibert.cursomc.services;
 import java.util.List;
 import java.util.Optional;
 
+import com.seibert.cursomc.domain.enums.Profile;
+import com.seibert.cursomc.security.UserSS;
+import com.seibert.cursomc.services.exception.AuthorizationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -34,6 +37,10 @@ public class ClientService {
 	private AddressRepository addressRepo;
 
 	public Client find(Integer id) {
+		UserSS user = UserService.authenticated();
+		if(user==null || !user.hasRole(Profile.ADMIN) && !id.equals(user.getId())){
+			throw new AuthorizationException("Denied Access");
+		}
 		Optional<Client> client = repo.findById(id);
 		
 		return client.orElseThrow(() -> new ObjectNotFoundException(
