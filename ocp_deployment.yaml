@@ -17,19 +17,45 @@ spec:
     spec:
       containers:
         - name: appcursomc
-          image: 'marcosseibert2389/appcursomc:latest'
+          image: 'marcosseibert2389/appcursomc:1.0.0'
           imagePullPolicy: IfNotPresent
           ports:
             - name: tcp
-              containerPort: 8085
+              containerPort: 8888
               protocol: TCP
-          resources:
-            limits:
-              cpu: 250m
-              memory: 512Mi
-            requests:
-              cpu: 125m
-              memory: 256Mi
+          env:
+            - name: ENV_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: ENV_PORT
+                  name: cursomc-config
+            - name: ENV_CTX_PATH
+              valueFrom:
+                configMapKeyRef:
+                  key: ENV_CTX_PATH
+                  name: cursomc-config
+            - name: ENV_DBUSER
+              valueFrom:
+                secretKeyRef:
+                  name: cursomc-secret
+                  key: username
+            - name: ENV_DBPWD
+              valueFrom:
+                secretKeyRef:
+                  name: cursomc-secret
+                  key: password
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: cursomc-secret
+                  key: jwtsecret
+      resources:
+        limits:
+          cpu: 250m
+          memory: 512Mi
+        requests:
+          cpu: 125m
+          memory: 256Mi
 ---
 kind: Service
 apiVersion: v1
@@ -41,7 +67,7 @@ spec:
     - name: appcursomc
       protocol: TCP
       port: 9999
-      targetPort: 8085
+      targetPort: 8888
   selector:
     app: appcursomc
   type: ClusterIP
